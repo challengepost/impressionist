@@ -50,7 +50,7 @@ describe DummyController do
     end
 
     it "should recognize unique user" do
-      controller.stub!(:user_id).and_return(42)
+      controller.stub!(:user_id_for_impression).and_return(42)
       controller.impressionist_subapp_filter(nil, [:user_id])
       controller.impressionist_subapp_filter(nil, [:user_id])
       Impression.should have(@impression_count + 1).records
@@ -212,7 +212,7 @@ describe DummyController do
     end
 
     it "should recognize unique user" do
-      controller.stub!(:user_id).and_return(666)
+      controller.stub!(:user_id_for_impression).and_return(666)
       impressionable = Post.create
       controller.impressionist(impressionable, nil, :unique => [:user_id])
       controller.impressionist(impressionable, nil, :unique => [:user_id])
@@ -253,11 +253,11 @@ describe DummyController do
 
     it "should recognize different user" do
       impressionable = Post.create
-      controller.stub!(:user_id).and_return(666)
+      controller.stub!(:user_id_for_impression).and_return(666)
       controller.impressionist(impressionable, nil, :unique => [:user_id])
       controller.impressionist(impressionable, nil, :unique => [:user_id])
       Impression.should have(@impression_count + 1).records
-      controller.stub!(:user_id).and_return(42)
+      controller.stub!(:user_id_for_impression).and_return(42)
       controller.impressionist(impressionable, nil, :unique => [:user_id])
       controller.impressionist(impressionable, nil, :unique => [:user_id])
       Impression.should have(@impression_count + 2).records

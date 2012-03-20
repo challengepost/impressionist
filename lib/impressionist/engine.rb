@@ -18,8 +18,7 @@ module Impressionist
 
     initializer 'impressionist.controller' do
       ActiveSupport.on_load(:action_controller) do
-        include ImpressionistController::InstanceMethods
-        extend ImpressionistController::ClassMethods
+        include ImpressionistControllerMethods
       end
     end
   end
