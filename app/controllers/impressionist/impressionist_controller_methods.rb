@@ -15,15 +15,15 @@ module Impressionist
   end
 
   def impressionist(impressionable,message=nil,opts={})
-    unless bypass_impression?
-      if impressionable.respond_to?(:impressionable?)
-        if unique_impressionable_impression?(impressionable, opts[:unique])
-          impressionable.impressions.create(associative_impression_attributes({:message => message}))
-        end
-      else
-        # we could create an impression anyway. for classes, too. why not?
-        raise "#{impressionable.class.to_s} is not impressionable!"
+    return if bypass_impression?
+
+    if impressionable.respond_to?(:impressionable?)
+      if unique_impressionable_impression?(impressionable, opts[:unique])
+        impressionable.impressions.create(associative_impression_attributes({:message => message}))
       end
+    else
+      # we could create an impression anyway. for classes, too. why not?
+      raise "#{impressionable.class.to_s} is not impressionable!"
     end
   end
 
@@ -32,21 +32,18 @@ module Impressionist
   end
 
   def impressionist_subapp_filter(actions=nil,unique_opts=nil)
-    unless bypass_impression
-      actions.collect!{|a|a.to_s} unless actions.blank?
-      if (actions.blank? || actions.include?(action_name)) && unique_impression?(unique_opts)
-        Impression.create(direct_impression_attributes)
-      end
+    return if bypass_impression?
+
+    actions.collect!{|a|a.to_s} unless actions.blank?
+    if (actions.blank? || actions.include?(action_name)) && unique_impression?(unique_opts)
+      Impression.create(direct_impression_attributes)
     end
   end
 
   private
 
   def bypass_impression?
-    Impressionist::Bots::WILD_CARDS.each do |wild_card|
-      return true if request.user_agent and request.user_agent.downcase.include? wild_card
-    end
-    Impressionist::Bots::LIST.include? request.user_agent
+    Impressionist::Bots.bot?(request.user_agent)
   end
 
   def unique_impressionable_impression?(impressionable, unique_opts)
