@@ -15,7 +15,7 @@ module Impressionist
   end
 
   def impressionist(impressionable,message=nil,opts={})
-    unless bypass_impression
+    unless bypass_impression?
       if impressionable.respond_to?(:impressionable?)
         if unique_impressionable_impression?(impressionable, opts[:unique])
           impressionable.impressions.create(associative_impression_attributes({:message => message}))
@@ -42,7 +42,7 @@ module Impressionist
 
   private
 
-  def bypass_impression
+  def bypass_impression?
     Impressionist::Bots::WILD_CARDS.each do |wild_card|
       return true if request.user_agent and request.user_agent.downcase.include? wild_card
     end
