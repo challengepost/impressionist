@@ -1,5 +1,6 @@
 class Impression
   include MongoMapper::Document
+  belongs_to :impressionable, :polymorphic=>true
 
   key :impressionable_type, String
   key :impressionable_id, String
@@ -13,4 +14,5 @@ class Impression
   key :message, String
   key :referrer, String
   timestamps!
+
 end
