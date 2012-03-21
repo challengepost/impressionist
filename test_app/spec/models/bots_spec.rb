@@ -1,9 +1,8 @@
-require './test_app/spec/spec_helper'
-# require 'spec_helper'
+require 'spec_helper'
 
 describe Impressionist::Bots do
 
-  describe "self.include?" do
+  describe "self.bot?" do
     it "is true if user_agent is matches wild card" do
       Impressionist::Bots.bot?("google.com bot").should be_true
     end
